@@ -39,8 +39,6 @@
 
 #define DFU_BLOCK_SIZE 512
 
-extern void setleds(int);
-
 typedef struct
 __attribute__ ((packed))
 {
@@ -326,7 +324,7 @@ void DFU_transferComplete(CONTROL_TRANSFER *control)
 				if (control->setup.wLength > 0)
 				{
 					printf("WRITE %p\n", flash_p);
-					setleds(((uint32_t) (flash_p - 0x4000)) >> 15);
+					//setleds(((uint32_t) (flash_p - 0x4000)) >> 15);
 					// we must pass DFU_BLOCK_SIZE to write_flash for some reason, it does not flash if we pass a smaller length
 					int r = write_flash((void *) flash_p, (char *) block_buffer, DFU_BLOCK_SIZE);
 					if (r == 0)

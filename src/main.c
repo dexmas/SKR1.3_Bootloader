@@ -24,7 +24,7 @@
  *****************************************************************************/
 
 #ifndef DEBUG_MESSAGES
-#define printf(...) do {} while (0)
+#define printf(...)
 #endif
 
 //#include "usbhw.h"
@@ -62,13 +62,13 @@ static uint32_t delay_loop(uint32_t count)
 	return del;
 }
 
-void setleds(int leds)
+/*void setleds(int leds)
 {
-	/*GPIO_write(LED1, leds &  1);
+	GPIO_write(LED1, leds &  1);
 	GPIO_write(LED2, leds &  2);
 	GPIO_write(LED3, leds &  4);
 	GPIO_write(LED4, leds &  8);
-	GPIO_write(LED5, leds & 16);*/
+	GPIO_write(LED5, leds & 16);
 }
 
 int dfu_btn_pressed(void)
@@ -76,7 +76,7 @@ int dfu_btn_pressed(void)
 	return GPIO_get(DFU_BTN);
 }
 
-/*void start_dfu(void)
+void start_dfu(void)
 {
 	DFU_init();
 	usb_init();
@@ -105,7 +105,7 @@ void check_sd_firmware(void)
 				return;
 			}
 
-			setleds((address - USER_FLASH_START) >> 15);
+			//setleds((address - USER_FLASH_START) >> 15);
 
  			printf("\t0x%lx\n", address);
 
@@ -136,8 +136,6 @@ static void boot(uint32_t a)
 
     __set_MSP(*(uint32_t *)USER_FLASH_START);
     start = (uint32_t *)(USER_FLASH_START + 4);
-
-	printf("boot: %d\n", start);
 
     ((exec)(*start))();
 }
@@ -197,9 +195,11 @@ int main(void)
 	GPIO_init(P2_6); GPIO_output(P2_6); GPIO_write(P2_6, 0);
 	GPIO_init(P2_7); GPIO_output(P2_7); GPIO_write(P2_7, 0);
 
-	setleds(31);
+	//setleds(31);
 
+#ifdef DEBUG_MESSAGES
 	UART_init(UART_RX, UART_TX, APPBAUD);
+#endif
 
 	printf("Bootloader Start\n");
 
@@ -210,7 +210,7 @@ int main(void)
 	if (SDCard_disk_initialize() == 0)
 		check_sd_firmware();
 
-	int dfu = 0;
+	/*int dfu = 0;
 	if (dfu_btn_pressed() == 0)
 	{
 		printf("ISP button pressed, entering DFU mode\n");
@@ -225,8 +225,8 @@ int main(void)
         dfu = 1;
     }
 
-	//if (dfu)
-	//	start_dfu();
+	if (dfu)
+		start_dfu();*/
 
 #ifdef WATCHDOG
 	WDT_Init(WDT_CLKSRC_IRC, WDT_MODE_RESET);
@@ -242,7 +242,9 @@ int main(void)
 
 	printf("This should never happen\n");
 
+#ifdef DEBUG_MESSAGES
 	while (UART_busy());
+#endif
 
 	for (volatile int i = (1<<18);i;i--);
 

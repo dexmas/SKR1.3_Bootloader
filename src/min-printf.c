@@ -25,6 +25,8 @@
 
 #include "min-printf.h"
 
+#ifdef DEBUG_MESSAGES
+
 #undef printf
 
 int _write(int, const char *, int);
@@ -215,3 +217,5 @@ int printf(const char *format, ...)
 	va_end(args);
 	return r;
 }
+
+#endif
