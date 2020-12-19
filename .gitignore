@@ -1,0 +1,6 @@
+build
+doc
+*~
+obj/
+/.pio
+/.vscode
